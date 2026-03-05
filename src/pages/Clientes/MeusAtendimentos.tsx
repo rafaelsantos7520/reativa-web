@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import {
@@ -28,25 +28,27 @@ import { CongratulationsModal } from '@/components/Clientes/CongratulationsModal
 import { PersonalRow } from '@/components/Clientes/PersonalRow';
 import { PersonalCard } from '@/components/Clientes/PersonalCard';
 import { Pagination } from '@/components/ui/pagination';
+import { useAuth } from '@/contexts/useAuth';
 import { cn } from '@/lib/utils';
 import { customerService } from '@/services/customer.service';
 
 
 export default function MeusAtendimentos() {
     const navigate = useNavigate();
+    const { user } = useAuth();
     const [search, setSearch] = useState('');
     const [page, setPage] = useState(1);
     const [showCongrats, setShowCongrats] = useState(false);
-    const prevReactivated = useRef<number | null>(null);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [statusFilter, setStatusFilter] = useState('');
+    const reactivatedStorageKey = `meus-atendimentos:last-reactivated:${user?.id ?? 'anonymous'}`;
 
     const now = new Date();
     const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
     const effectiveEndDate = startDate && !endDate ? today : (endDate || undefined);
 
-    const { data, isLoading, isFetching, refetch } = useQuery({
+    const { data, isLoading, isFetching, isSuccess, refetch } = useQuery({
         queryKey: ['personal-reengagements', page, search, startDate, effectiveEndDate, statusFilter],
         queryFn: () => customerService.getPersonalReengagements({
             page,
@@ -74,13 +76,23 @@ export default function MeusAtendimentos() {
     const filteredList = allReengagements;
 
     useEffect(() => {
-        if (prevReactivated.current !== null && totalReactivated > prevReactivated.current) {
-            const timer = setTimeout(() => setShowCongrats(true), 0);
-            prevReactivated.current = totalReactivated;
-            return () => clearTimeout(timer);
+        if (!isSuccess) return;
+
+        const storedValue = localStorage.getItem(reactivatedStorageKey);
+        const previousTotal = storedValue !== null ? Number(storedValue) : null;
+        const hasValidPrevious = previousTotal !== null && !Number.isNaN(previousTotal);
+        let timer: ReturnType<typeof setTimeout> | null = null;
+
+        if (hasValidPrevious && totalReactivated > previousTotal) {
+            timer = setTimeout(() => setShowCongrats(true), 0);
         }
-        prevReactivated.current = totalReactivated;
-    }, [totalReactivated]);
+
+        localStorage.setItem(reactivatedStorageKey, String(totalReactivated));
+
+        return () => {
+            if (timer) clearTimeout(timer);
+        };
+    }, [isSuccess, reactivatedStorageKey, totalReactivated]);
 
     const handleNextPage = () => { if (nextPageUrl) setPage(p => p + 1); };
     const handlePrevPage = () => { if (prevPageUrl) setPage(p => Math.max(1, p - 1)); };
