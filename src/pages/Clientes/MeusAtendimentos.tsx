@@ -31,9 +31,6 @@ import { Pagination } from '@/components/ui/pagination';
 import { cn } from '@/lib/utils';
 import { customerService } from '@/services/customer.service';
 
-// ...existing code...
-
-// ─── Main ────────────────────────────────────────────────────────────────────
 
 export default function MeusAtendimentos() {
     const navigate = useNavigate();
@@ -59,6 +56,7 @@ export default function MeusAtendimentos() {
             status: statusFilter ? Number(statusFilter) : undefined,
         }),
         placeholderData: keepPreviousData,
+        refetchInterval: 5 * 60 * 1000, // 5 minutos
         select: (res) => res.data,
     });
 
@@ -74,7 +72,6 @@ export default function MeusAtendimentos() {
     const statusRecollection = data?.statusRecollection ?? {};
 
     const filteredList = allReengagements;
-    console.log('FilteredList:', filteredList);
 
     useEffect(() => {
         if (prevReactivated.current !== null && totalReactivated > prevReactivated.current) {

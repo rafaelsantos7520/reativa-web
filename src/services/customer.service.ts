@@ -277,6 +277,7 @@ export const customerService = {
                 ...(params.status !== undefined && { status: params.status }),
             },
         });
+        console.log('PersonalReengagementsResponse:', response.data); // Log para depuração
         return response.data;
     },
 };
