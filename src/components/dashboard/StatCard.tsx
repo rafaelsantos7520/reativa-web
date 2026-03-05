@@ -18,7 +18,10 @@ export default function StatCard({
     colorClass, bgClass, trend, delay,
 }: StatCardProps) {
     const count = useCountUp(rawValue, 1400);
-    const display = displayFn(parseInt(count.replace(/\D/g, '')) || 0);
+    const normalizedValue = Number.isInteger(rawValue)
+        ? Math.round(count)
+        : Number(count.toFixed(2));
+    const display = displayFn(normalizedValue);
 
     return (
         <div

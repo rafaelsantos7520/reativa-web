@@ -1,31 +1,35 @@
 import { UserX } from 'lucide-react';
-import { dashboardStats, inactiveClients } from '@/data/mock';
 import { cn } from '@/lib/utils';
+import type { InactiveClientsSummary } from '@/services/dashboard.service';
 
-const assigned = inactiveClients.filter(c => c.assignedTo !== null).length;
+interface InativosCardProps {
+    summary?: InactiveClientsSummary;
+    totalInactive: number;
+    isLoading?: boolean;
+}
 
-const rows = [
-    {
-        label: 'Nunca compraram',
-        val: dashboardStats.neverBought,
-        total: dashboardStats.totalInactive,
-        color: 'from-rose-500 to-pink-600',
-    },
-    {
-        label: '+90 dias sem compra',
-        val: dashboardStats.inactive90,
-        total: dashboardStats.totalInactive,
-        color: 'from-amber-500 to-orange-500',
-    },
-    {
-        label: 'Já atribuídos',
-        val: assigned,
-        total: dashboardStats.totalInactive,
-        color: 'from-emerald-500 to-blue-500',
-    },
-];
+export default function InativosCard({ summary, totalInactive, isLoading = false }: InativosCardProps) {
+    const rows = [
+        {
+            label: 'Nunca compraram',
+            val: summary?.never_bought ?? 0,
+            total: totalInactive || 1,
+            color: 'from-rose-500 to-pink-600',
+        },
+        {
+            label: '+90 dias sem compra',
+            val: summary?.plus_90_days ?? 0,
+            total: totalInactive || 1,
+            color: 'from-amber-500 to-orange-500',
+        },
+        {
+            label: 'Já atribuídos',
+            val: summary?.already_assigned ?? 0,
+            total: totalInactive || 1,
+            color: 'from-emerald-500 to-blue-500',
+        },
+    ];
 
-export default function InativosCard() {
     return (
         <div
             className="solid-card rounded-2xl p-5 relative overflow-hidden animate-fade-in"
@@ -39,6 +43,10 @@ export default function InativosCard() {
             </h2>
 
             <div className="space-y-3.5">
+                {!isLoading && totalInactive === 0 && (
+                    <p className="text-xs text-muted-foreground">Sem clientes inativos no período.</p>
+                )}
+
                 {rows.map(item => (
                     <div key={item.label}>
                         <div className="flex justify-between text-xs mb-1.5">

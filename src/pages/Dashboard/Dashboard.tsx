@@ -1,10 +1,12 @@
-import { UserX, DollarSign, TrendingUp, Users, Award } from 'lucide-react';
-import { dashboardStats } from '@/data/mock';
+import { UserX, DollarSign, TrendingUp, Users, Award, RefreshCcw } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/contexts/useAuth';
+import { Button } from '@/components/ui/button';
 import StatCard from '@/components/dashboard/StatCard';
 import TopSellersCard from '@/components/dashboard/TopSellersCard';
 import InativosCard from '@/components/dashboard/InativosCard';
 import RecentSalesCard from '@/components/dashboard/RecentSalesCard';
+import { dashboardService } from '@/services/dashboard.service';
 
 function getGreeting() {
     const h = new Date().getHours();
@@ -17,18 +19,42 @@ export default function Dashboard() {
     const { user } = useAuth();
     const name = user?.name ?? 'Usuário';
 
+    const { data, isLoading, isFetching, refetch } = useQuery({
+        queryKey: ['dashboard'],
+        queryFn: () => dashboardService.getDashboard(),
+        refetchInterval: 5 * 60 * 1000,
+    });
+
+    const stats = data?.stats;
+    const inactiveSummary = data?.inactive_clients_summary;
+    const topAttendants = (data?.top_attendants ?? []).filter((item) => item.type === undefined || item.type === 3);
+    const recentSales = data?.recent_sales ?? [];
+
     return (
         <div className="p-6 space-y-6 max-w-7xl mx-auto">
 
             {/* Header */}
             <div className="animate-fade-in" style={{ animationDelay: '0ms', opacity: 0 }}>
-                <div className="flex items-center gap-2 mb-1">
-                    <div className="w-1 h-6 rounded-full bg-gradient-to-b from-violet-500 to-blue-500" />
-                    <h1 className="text-2xl font-extrabold tracking-tight flex items-center gap-2">
-                        {getGreeting()},{' '}
-                        <span className="gradient-text-blue">{name.split(' ')[0]}</span>
-                        <Award className="w-5 h-5 text-violet-500" />
-                    </h1>
+                <div className="flex items-center justify-between gap-3 mb-1">
+                    <div className="flex items-center gap-2">
+                        <div className="w-1 h-6 rounded-full bg-gradient-to-b from-violet-500 to-blue-500" />
+                        <h1 className="text-2xl font-extrabold tracking-tight flex items-center gap-2">
+                            {getGreeting()},{' '}
+                            <span className="gradient-text-blue">{name.split(' ')[0]}</span>
+                            <Award className="w-5 h-5 text-violet-500" />
+                        </h1>
+                    </div>
+
+                    <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => refetch()}
+                        disabled={isFetching}
+                        className="h-8"
+                    >
+                        <RefreshCcw className={`w-3.5 h-3.5 mr-1 ${isFetching ? 'animate-spin' : ''}`} />
+                        {isFetching ? 'Atualizando...' : 'Atualizar'}
+                    </Button>
                 </div>
                 <p className="text-muted-foreground text-sm ml-3">Visão geral do sistema de reativação</p>
             </div>
@@ -37,7 +63,7 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
                 <StatCard
                     label="Clientes Inativos"
-                    rawValue={dashboardStats.totalInactive}
+                    rawValue={stats?.inactive_customers ?? 0}
                     displayFn={v => String(v)}
                     icon={UserX}
                     colorClass="text-rose-500"
@@ -46,7 +72,7 @@ export default function Dashboard() {
                 />
                 <StatCard
                     label="Receita Mensal"
-                    rawValue={dashboardStats.totalSalesMonth}
+                    rawValue={stats?.monthly_revenue ?? 0}
                     displayFn={v => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(v)}
                     icon={DollarSign}
                     colorClass="text-blue-500"
@@ -56,7 +82,7 @@ export default function Dashboard() {
                 />
                 <StatCard
                     label="Atendentes Ativos"
-                    rawValue={dashboardStats.totalAttendants}
+                    rawValue={stats?.active_attendants ?? 0}
                     displayFn={v => String(v)}
                     icon={Users}
                     colorClass="text-violet-500"
@@ -65,7 +91,7 @@ export default function Dashboard() {
                 />
                 <StatCard
                     label="Taxa de Conversão"
-                    rawValue={dashboardStats.conversionRate}
+                    rawValue={stats?.conversion_rate ?? 0}
                     displayFn={v => `${v}%`}
                     icon={TrendingUp}
                     colorClass="text-amber-500"
@@ -77,10 +103,10 @@ export default function Dashboard() {
 
             {/* Bottom grid */}
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-                <TopSellersCard />
+                <TopSellersCard sellers={topAttendants} isLoading={isLoading} />
                 <div className="lg:col-span-2 flex flex-col gap-4">
-                    <InativosCard />
-                    <RecentSalesCard />
+                    <InativosCard summary={inactiveSummary} totalInactive={stats?.inactive_customers ?? 0} isLoading={isLoading} />
+                    <RecentSalesCard sales={recentSales} isLoading={isLoading} />
                 </div>
             </div>
         </div>

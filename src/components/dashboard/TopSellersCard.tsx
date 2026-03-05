@@ -1,12 +1,7 @@
 import { ShoppingCart } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { teamMembers } from '@/data/mock';
 import { cn } from '@/lib/utils';
-
-const topSellers = [...teamMembers]
-    .filter(m => m.role === 'atendente')
-    .sort((a, b) => b.salesValue - a.salesValue)
-    .slice(0, 4);
+import type { DashboardTopAttendant } from '@/services/dashboard.service';
 
 const rankColors = [
     'text-amber-500', 'text-slate-400', 'text-amber-700', 'text-muted-foreground',
@@ -19,8 +14,18 @@ const rankBadge = [
     'bg-white/5 text-muted-foreground border-white/10',
 ];
 
-export default function TopSellersCard() {
-    const max = topSellers[0]?.salesValue ?? 1;
+interface TopSellersCardProps {
+    sellers: DashboardTopAttendant[];
+    isLoading?: boolean;
+}
+
+function getInitials(name: string) {
+    return name.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase();
+}
+
+export default function TopSellersCard({ sellers, isLoading = false }: TopSellersCardProps) {
+    const topSellers = [...sellers].sort((a, b) => b.revenue - a.revenue).slice(0, 4);
+    const max = topSellers[0]?.revenue ?? 1;
 
     return (
         <div
@@ -41,11 +46,15 @@ export default function TopSellersCard() {
             </div>
 
             <div className="space-y-5">
+                {!isLoading && topSellers.length === 0 && (
+                    <p className="text-xs text-muted-foreground">Sem dados de atendentes no momento.</p>
+                )}
+
                 {topSellers.map((s, i) => {
-                    const pct = Math.round((s.salesValue / max) * 100);
+                    const pct = Math.round((s.revenue / max) * 100);
                     return (
                         <div
-                            key={s.id}
+                            key={`${s.user.name}-${i}`}
                             className="flex items-center gap-3 animate-fade-in"
                             style={{ animationDelay: `${500 + i * 80}ms`, opacity: 0 }}
                         >
@@ -59,15 +68,15 @@ export default function TopSellersCard() {
 
                             {/* Avatar */}
                             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-xs font-bold text-white shrink-0 shadow-md">
-                                {s.avatar}
+                                {getInitials(s.user.name)}
                             </div>
 
                             {/* Info */}
                             <div className="flex-1 min-w-0">
                                 <div className="flex items-center justify-between mb-1.5">
-                                    <span className={cn('text-sm font-semibold truncate', rankColors[i])}>{s.name}</span>
+                                    <span className={cn('text-sm font-semibold truncate', rankColors[i])}>{s.user.name}</span>
                                     <span className="text-sm font-bold gradient-text-blue ml-2 shrink-0">
-                                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(s.salesValue)}
+                                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(s.revenue)}
                                     </span>
                                 </div>
                                 <div className="relative h-1.5 rounded-full bg-black/5 dark:bg-white/5 overflow-hidden">
@@ -78,9 +87,9 @@ export default function TopSellersCard() {
                                 </div>
                                 <div className="flex gap-3 mt-1.5">
                                     <span className="text-[10px] text-muted-foreground flex items-center gap-1">
-                                        <ShoppingCart className="w-2.5 h-2.5" />{s.salesCount} vendas
+                                        <ShoppingCart className="w-2.5 h-2.5" />{s.sales} vendas
                                     </span>
-                                    <span className="text-[10px] text-muted-foreground">{s.conversionRate}% conv.</span>
+                                    <span className="text-[10px] text-muted-foreground">{s.conversion}% conv.</span>
                                 </div>
                             </div>
                         </div>
