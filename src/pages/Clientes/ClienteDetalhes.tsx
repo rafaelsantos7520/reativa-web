@@ -49,7 +49,7 @@ export default function ClienteDetalhes() {
             const res = await customerService.getAccessStoreLink(Number(id));
             const token = res?.data?.token;
             if (token) {
-                window.open(`https://office.grupoozonteck.com/impersonation/${token}`, '_blank', 'noopener,noreferrer');
+                window.open(`${import.meta.env.VITE_OFFICE_BASE_URL}/impersonation/${token}`, '_blank', 'noopener,noreferrer');
             }
         } catch (err) {
             console.error('Erro ao obter link da loja:', err);

@@ -6,17 +6,10 @@ import {
     Headphones,
     RefreshCcw,
     TrendingUp,
-    ChevronLeft,
-    ChevronRight,
-    MessageCircle,
-    ExternalLink,
-    Eye,
-    Loader2,
     Target,
     Users,
     X,
-    PartyPopper,
-    Trophy,
+    Loader2,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -29,144 +22,16 @@ import {
     TableHead,
     TableCell,
 } from '@/components/ui/table';
+import { SkeletonRow } from '@/components/Clientes/SkeletonRow';
+import { SkeletonStat } from '@/components/Clientes/SkeletonStat';
+import { CongratulationsModal } from '@/components/Clientes/CongratulationsModal';
+import { PersonalRow } from '@/components/Clientes/PersonalRow';
+import { PersonalCard } from '@/components/Clientes/PersonalCard';
+import { Pagination } from '@/components/ui/pagination';
 import { cn } from '@/lib/utils';
-import {
-    getInitials,
-    getAvatarColor,
-    formatWhatsApp,
-    getWhatsAppLink,
-    formatDate,
-} from '@/lib/client-utils';
-import {
-    customerService,
-    type PersonalReengagement,
-} from '@/services/customer.service';
+import { customerService } from '@/services/customer.service';
 
-// ─── Status styling map ───────────────────────────────────────────────────────
-
-const statusStyleMap: Record<number, { color: string; dotColor: string }> = {
-    1: {
-        color: 'text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 border-blue-200 dark:border-blue-500/20',
-        dotColor: 'bg-blue-500',
-    },
-    2: {
-        color: 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/20',
-        dotColor: 'bg-emerald-500',
-    },
-    3: {
-        color: 'text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-500/20',
-        dotColor: 'bg-amber-500',
-    },
-    4: {
-        color: 'text-rose-700 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/10 border-rose-200 dark:border-rose-500/20',
-        dotColor: 'bg-rose-500',
-    },
-};
-
-// ─── Skeleton ────────────────────────────────────────────────────────────────
-
-function SkeletonRow() {
-    return (
-        <TableRow className="border-border">
-            <TableCell className="py-3">
-                <div className="h-3.5 w-10 rounded bg-muted animate-pulse" />
-            </TableCell>
-            <TableCell className="py-3">
-                <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-full bg-muted animate-pulse shrink-0" />
-                    <div className="space-y-1.5">
-                        <div className="h-3.5 w-28 rounded bg-muted animate-pulse" />
-                        <div className="h-3 w-40 rounded bg-muted animate-pulse" />
-                    </div>
-                </div>
-            </TableCell>
-            <TableCell className="py-3">
-                <div className="h-3.5 w-32 rounded bg-muted animate-pulse" />
-            </TableCell>
-            <TableCell className="py-3 text-center">
-                <div className="h-5 w-24 rounded-full bg-muted animate-pulse mx-auto" />
-            </TableCell>
-            <TableCell className="py-3 text-center">
-                <div className="h-3.5 w-20 rounded bg-muted animate-pulse mx-auto" />
-            </TableCell>
-            <TableCell className="py-3 text-right">
-                <div className="h-7 w-14 rounded-lg bg-muted animate-pulse ml-auto" />
-            </TableCell>
-        </TableRow>
-    );
-}
-
-function SkeletonStat() {
-    return (
-        <div className="solid-card p-4 sm:p-5 flex items-center gap-4">
-            <div className="w-10 h-10 rounded-xl bg-muted animate-pulse shrink-0" />
-            <div className="space-y-2">
-                <div className="h-3 w-24 rounded bg-muted animate-pulse" />
-                <div className="h-6 w-14 rounded bg-muted animate-pulse" />
-            </div>
-        </div>
-    );
-}
-
-// ─── Main ────────────────────────────────────────────────────────────────────
-
-// ─── Modal de parabéns ──────────────────────────────────────────────────────
-
-function CongratulationsModal({ onClose }: { onClose: () => void }) {
-    return (
-        <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4"
-            onClick={onClose}
-        >
-            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
-            <div
-                className="relative z-10 solid-card p-8 max-w-sm w-full text-center animate-fade-in shadow-2xl"
-                onClick={e => e.stopPropagation()}
-                style={{ animationDuration: '0.3s' }}
-            >
-                {/* Confetes animados */}
-                <div className="absolute inset-0 overflow-hidden rounded-xl pointer-events-none">
-                    {Array.from({ length: 12 }).map((_, i) => (
-                        <div
-                            key={i}
-                            className="absolute w-2 h-2 rounded-full opacity-80"
-                            style={{
-                                left: `${8 + i * 7}%`,
-                                top: '-8px',
-                                backgroundColor: ['#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ef4444', '#ec4899'][i % 6],
-                                animation: `confetti-fall ${1 + (i % 3) * 0.4}s ease-in ${(i % 5) * 0.15}s forwards`,
-                            }}
-                        />
-                    ))}
-                </div>
-
-                <div className="flex justify-center mb-4">
-                    <div className="w-20 h-20 rounded-full bg-emerald-100 dark:bg-emerald-500/20 flex items-center justify-center">
-                        <Trophy className="w-10 h-10 text-emerald-500" />
-                    </div>
-                </div>
-
-                <div className="flex items-center justify-center gap-2 mb-2">
-                    <PartyPopper className="w-5 h-5 text-amber-500" />
-                    <h2 className="text-2xl font-extrabold tracking-tight">Parabéns!</h2>
-                    <PartyPopper className="w-5 h-5 text-amber-500" />
-                </div>
-
-                <p className="text-muted-foreground text-sm mb-6">
-                    Nova venda realizada! 🎉<br />
-                    Seu número de reativados aumentou.
-                </p>
-
-                <button
-                    onClick={onClose}
-                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl transition-colors"
-                >
-                    Arrasou! 🚀
-                </button>
-            </div>
-        </div>
-    );
-}
+// ...existing code...
 
 // ─── Main ────────────────────────────────────────────────────────────────────
 
@@ -255,13 +120,13 @@ export default function MeusAtendimentos() {
     return (
         <>
             {showCongrats && <CongratulationsModal onClose={() => setShowCongrats(false)} />}
-            <div className="p-4 sm:p-6 space-y-5 max-w-7xl mx-auto">
+            <div className="p-4 py-8 sm:p-6 space-y-5 max-w-7xl mx-auto">
 
                 {/* Header */}
-                <div className="flex items-center justify-between animate-fade-in">
+                <div className="flex items-center justify-between animate-fade-in flex-col sm:flex-row gap-4">
                     <div>
                         <h1 className="text-2xl font-extrabold tracking-tight">Meus Atendimentos</h1>
-                        <p className="text-muted-foreground text-sm mt-0.5">
+                        <p className="text-muted-foreground text-sm mt-0.5 hidden sm:block">
                             Clientes que estou atendendo neste mês
                         </p>
                     </div>
@@ -299,16 +164,22 @@ export default function MeusAtendimentos() {
                     }
                 </div>
 
-                {/* Search + refresh */}
+                {/* Filtros */}
                 <div className="solid-card p-4 animate-fade-in">
-                    <div className="flex flex-wrap items-center gap-3">
-                        <div className="relative flex-1 min-w-[200px] max-w-sm">
+                    <div className="flex items-center gap-2 mb-3">
+                        <Search className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-sm font-semibold">Filtros</span>
+                    </div>
+
+                    <div className="space-y-3 md:space-y-0 md:flex md:flex-wrap md:items-center md:gap-3">
+                        {/* Search - Full width on mobile */}
+                        <div className="relative w-full md:flex-1 md:min-w-[220px] md:max-w-sm">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                             <Input
                                 placeholder="Pesquisar por nome, email ou WhatsApp..."
                                 value={search}
                                 onChange={e => handleSearch(e.target.value)}
-                                className="pl-9 h-9 text-sm"
+                                className="pl-9 h-9 text-sm w-full"
                             />
                             {search && (
                                 <button
@@ -319,24 +190,32 @@ export default function MeusAtendimentos() {
                                 </button>
                             )}
                         </div>
-                        <Input
-                            type="date"
-                            value={startDate}
-                            onChange={e => handleStartDate(e.target.value)}
-                            className="h-9 w-[160px] text-xs"
-                            aria-label="Data inicial"
-                        />
-                        <Input
-                            type="date"
-                            value={endDate}
-                            onChange={e => handleEndDate(e.target.value)}
-                            className="h-9 w-[160px] text-xs"
-                            aria-label="Data final"
-                        />
+
+                        <div className="w-full h-px bg-border md:hidden" />
+
+                        {/* Date inputs - Wrapper for responsive layout */}
+                        <div className="flex flex-col md:flex-row gap-2 md:gap-3 w-full md:w-auto">
+                            <Input
+                                type="date"
+                                value={startDate}
+                                onChange={e => handleStartDate(e.target.value)}
+                                className="h-9 text-xs flex-1 md:flex-none md:w-[140px]"
+                                aria-label="Data inicial"
+                            />
+                            <Input
+                                type="date"
+                                value={endDate}
+                                onChange={e => handleEndDate(e.target.value)}
+                                className="h-9 text-xs flex-1 md:flex-none md:w-[140px]"
+                                aria-label="Data final"
+                            />
+                        </div>
+
+                        {/* Select status */}
                         <select
                             value={statusFilter}
                             onChange={e => handleStatusFilter(e.target.value)}
-                            className="h-9 min-w-[180px] rounded-md border border-input bg-background px-3 text-xs ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                            className="h-9 w-full md:w-auto md:min-w-[160px] rounded-md border border-input bg-background px-3 text-xs ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                             aria-label="Filtrar por status"
                         >
                             <option value="">Todos os status</option>
@@ -344,31 +223,39 @@ export default function MeusAtendimentos() {
                                 <option key={key} value={key}>{label}</option>
                             ))}
                         </select>
-                        <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={clearFilters}
-                            className="h-9 text-xs"
-                            disabled={!search && !startDate && !endDate && !statusFilter}
-                        >
-                            Limpar filtros
-                        </Button>
-                        <Button
-                            size="sm"
-                            onClick={() => refetch()}
-                            disabled={isFetching}
-                            className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 text-white gap-1.5 h-9 text-xs"
-                        >
-                            <RefreshCcw className={cn('w-3.5 h-3.5', isFetching && 'animate-spin')} />
-                            {isFetching ? 'Atualizando...' : 'Atualizar'}
-                        </Button>
+
+                        {/* Buttons */}
+                        <div className="w-full h-px bg-border md:hidden" />
+                        <div className="hidden md:block md:flex-1" />
+
+                        <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto">
+                            <Button
+                                size="sm"
+                                onClick={() => refetch()}
+                                disabled={isFetching}
+                                className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 text-white gap-1.5 h-9 text-xs w-full md:w-auto"
+                            >
+                                <RefreshCcw className={cn('w-3.5 h-3.5', isFetching && 'animate-spin')} />
+                                {isFetching ? 'Atualizando...' : 'Atualizar'}
+                            </Button>
+                            <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={clearFilters}
+                                className="h-9 text-xs w-full md:w-auto"
+                                disabled={!search && !startDate && !endDate && !statusFilter}
+                            >
+                                <X className="w-3.5 h-3.5" />
+                                Limpar filtros
+                            </Button>
+                        </div>
                     </div>
                 </div>
 
                 {/* Tabela */}
-                <div className="solid-card overflow-hidden animate-fade-in">
-
-                    <div className="px-5 py-4 border-b border-border flex items-center justify-between">
+                <div className="border border-border rounded-lg overflow-hidden animate-fade-in">
+                    {/* Header Info */}
+                    <div className="px-5 py-4 border-b border-border bg-secondary/50 flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <Users className="w-4 h-4 text-muted-foreground" />
                             <h2 className="text-sm font-semibold">Clientes em Atendimento</h2>
@@ -391,146 +278,107 @@ export default function MeusAtendimentos() {
                         </div>
                     </div>
 
-                    <Table>
-                        <TableHeader>
-                            <TableRow className="border-border hover:bg-transparent">
-                                <TableHead className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground w-[80px]">ID</TableHead>
-                                <TableHead className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">Cliente</TableHead>
-                                <TableHead className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">WhatsApp</TableHead>
-                                <TableHead className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground text-center w-[130px]">Status</TableHead>
-                                <TableHead className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground text-center w-[100px]">Início</TableHead>
-                                <TableHead className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground text-right w-[80px]">Ações</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody className={cn('transition-opacity duration-200', isFetching && !isLoading && 'opacity-50')}>
+                    {/* Desktop - Tabela */}
+                    <div className="hidden md:block">
+                        <div className="overflow-x-auto">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow className="border-border hover:bg-transparent bg-secondary/80 dark:bg-secondary/90 backdrop-blur-sm">
+                                        <TableHead className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground w-[8%] px-3">ID</TableHead>
+                                        <TableHead className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground px-3">Cliente</TableHead>
+                                        <TableHead className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground w-[18%] px-3">WhatsApp</TableHead>
+                                        <TableHead className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground text-center w-[18%] px-3">Status</TableHead>
+                                        <TableHead className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground text-center w-[15%] px-3">Início</TableHead>
+                                        <TableHead className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground text-center w-[12%] px-3">Ações</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                            </Table>
+                        </div>
+                        <div className="overflow-y-auto max-h-[600px] overflow-x-auto">
+                            <Table>
+                                <TableBody className={cn('transition-opacity duration-200', isFetching && !isLoading && 'opacity-50')}>
+                                    {isLoading ? (
+                                        Array.from({ length: 6 }).map((_, idx) => <SkeletonRow key={idx} />)
+                                    ) : filteredList.length === 0 ? (
+                                        <TableRow>
+                                            <TableCell colSpan={6} className="text-center py-16">
+                                                <div className="flex flex-col items-center gap-2">
+                                                    <Users className="w-8 h-8 text-muted-foreground/30" />
+                                                    <p className="text-muted-foreground text-sm">
+                                                        {search ? 'Nenhum resultado para a pesquisa' : 'Nenhum atendimento encontrado'}
+                                                    </p>
+                                                    {search && (
+                                                        <button
+                                                            onClick={() => handleSearch('')}
+                                                            className="text-xs text-blue-600 dark:text-blue-400 hover:underline mt-1"
+                                                        >
+                                                            Limpar pesquisa
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ) : (
+                                        filteredList.map(r => <PersonalRow key={r.id} reengagement={r} statusRecollection={statusRecollection} />)
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </div>
+                    </div>
+
+                    {/* Mobile - Cards */}
+                    <div className="md:hidden">
+                        <div className="max-h-[600px] overflow-y-auto p-4 space-y-3">
                             {isLoading ? (
-                                Array.from({ length: 6 }).map((_, idx) => <SkeletonRow key={idx} />)
-                            ) : filteredList.length === 0 ? (
-                                <TableRow>
-                                    <TableCell colSpan={6} className="text-center py-16">
-                                        <div className="flex flex-col items-center gap-2">
-                                            <Users className="w-8 h-8 text-muted-foreground/30" />
-                                            <p className="text-muted-foreground text-sm">
-                                                {search ? 'Nenhum resultado para a pesquisa' : 'Nenhum atendimento encontrado'}
-                                            </p>
-                                            {search && (
-                                                <button
-                                                    onClick={() => handleSearch('')}
-                                                    className="text-xs text-blue-600 dark:text-blue-400 hover:underline mt-1"
-                                                >
-                                                    Limpar pesquisa
-                                                </button>
-                                            )}
+                                Array.from({ length: 6 }).map((_, idx) => (
+                                    <div key={idx} className="solid-card p-4 space-y-3 border border-border/50">
+                                        <div className="h-12 w-12 rounded-full bg-muted animate-pulse" />
+                                        <div className="space-y-2">
+                                            <div className="h-4 w-24 bg-muted animate-pulse rounded" />
+                                            <div className="h-3 w-32 bg-muted animate-pulse rounded" />
                                         </div>
-                                    </TableCell>
-                                </TableRow>
+                                    </div>
+                                ))
+                            ) : filteredList.length === 0 ? (
+                                <div className="text-center py-16">
+                                    <div className="flex flex-col items-center gap-2">
+                                        <Users className="w-8 h-8 text-muted-foreground/30" />
+                                        <p className="text-muted-foreground text-sm">
+                                            {search ? 'Nenhum resultado para a pesquisa' : 'Nenhum atendimento encontrado'}
+                                        </p>
+                                        {search && (
+                                            <button
+                                                onClick={() => handleSearch('')}
+                                                className="text-xs text-blue-600 dark:text-blue-400 hover:underline mt-1"
+                                            >
+                                                Limpar pesquisa
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
                             ) : (
-                                filteredList.map(r => <PersonalRow key={r.id} reengagement={r} statusRecollection={statusRecollection} />)
+                                <div className={cn('space-y-3 transition-opacity duration-200', isFetching && !isLoading && 'opacity-50')}>
+                                    {filteredList.map(r => (
+                                        <PersonalCard key={r.id} reengagement={r} statusRecollection={statusRecollection} />
+                                    ))}
+                                </div>
                             )}
-                        </TableBody>
-                    </Table>
+                        </div>
+                    </div>
 
                     {/* Paginação */}
                     {(prevPageUrl || nextPageUrl) && !isLoading && (
-                        <div className="px-5 py-3 border-t border-border flex items-center justify-between">
-                            <span className="text-xs text-muted-foreground">Página {currentPage}</span>
-                            <div className="flex items-center gap-2">
-                                <Button
-                                    size="sm" variant="outline"
-                                    onClick={handlePrevPage}
-                                    disabled={!prevPageUrl || isFetching}
-                                    className="h-8 w-8 p-0 disabled:opacity-30"
-                                >
-                                    <ChevronLeft className="w-4 h-4" />
-                                </Button>
-                                <Button
-                                    size="sm" variant="outline"
-                                    onClick={handleNextPage}
-                                    disabled={!nextPageUrl || isFetching}
-                                    className="h-8 w-8 p-0 disabled:opacity-30"
-                                >
-                                    <ChevronRight className="w-4 h-4" />
-                                </Button>
-                            </div>
-                        </div>
+                        <Pagination
+                            page={currentPage}
+                            hasPrev={!!prevPageUrl}
+                            hasNext={!!nextPageUrl}
+                            onPrev={handlePrevPage}
+                            onNext={handleNextPage}
+                            isFetching={isFetching}
+                        />
                     )}
                 </div>
             </div>
         </>
-    );
-}
-
-// ─── Row ─────────────────────────────────────────────────────────────────────
-
-function PersonalRow({ reengagement, statusRecollection }: { reengagement: PersonalReengagement; statusRecollection: Record<string, string> }) {
-    const navigate = useNavigate();
-    const user = reengagement.user;
-    const initials = getInitials(user.name);
-    const colorClass = getAvatarColor(user.name);
-    const statusStyle = statusStyleMap[reengagement.status] ?? statusStyleMap[1];
-    const statusLabel = statusRecollection[String(reengagement.status)] || 'Desconhecido';
-
-    return (
-        <TableRow className="border-border hover:bg-muted/50 transition-colors">
-            <TableCell className="py-3">
-                <span className="text-xs text-muted-foreground font-mono">#{user.id}</span>
-            </TableCell>
-
-            <TableCell className="py-3">
-                <div className="flex items-center gap-3">
-                    <div className={cn(
-                        'w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0',
-                        colorClass
-                    )}>
-                        {initials}
-                    </div>
-                    <div className="min-w-0">
-                        <p className="text-sm font-semibold truncate">{user.name}</p>
-                        <p className="text-md text-muted-foreground truncate">{user.login}</p>
-                    </div>
-                </div>
-            </TableCell>
-
-            <TableCell className="py-3">
-                {user.phone_number ? (
-                    <a
-                        href={getWhatsAppLink(user.phone_number)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 transition-colors group/wa"
-                    >
-                        <MessageCircle className="w-3.5 h-3.5 shrink-0" />
-                        <span className="text-sm">{formatWhatsApp(user.phone_number)}</span>
-                        <ExternalLink className="w-3 h-3 opacity-0 group-hover/wa:opacity-100 transition-opacity shrink-0" />
-                    </a>
-                ) : (
-                    <span className="text-sm text-muted-foreground">--</span>
-                )}
-            </TableCell>
-
-            <TableCell className="py-3 text-center">
-                <Badge className={cn('text-[10px] border gap-1.5 whitespace-nowrap', statusStyle.color)}>
-                    <div className={cn('w-1.5 h-1.5 rounded-full shrink-0', statusStyle.dotColor)} />
-                    {statusLabel}
-                </Badge>
-            </TableCell>
-
-            <TableCell className="py-3 text-center">
-                <span className="text-xs text-muted-foreground tabular-nums">
-                    {formatDate(reengagement.created_at)}
-                </span>
-            </TableCell>
-
-            <TableCell className="py-3 text-right">
-                <Button
-                    size="sm"
-                    onClick={() => navigate(`/clientes/${user.id}`)}
-                    className="h-7 text-xs gap-1.5 bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 text-white"
-                >
-                    <Eye className="w-3 h-3" />
-                    Ver
-                </Button>
-            </TableCell>
-        </TableRow>
     );
 }
