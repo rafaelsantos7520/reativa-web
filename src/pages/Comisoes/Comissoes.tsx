@@ -17,7 +17,7 @@ export default function Comissoes() {
     const { data, isLoading, isFetching, isError } = useQuery({
         queryKey: ['comissoes', search, startDate, endDate, page],
         queryFn: () => financialService.getCommissions({
-            search: search || undefined,
+            login: search || undefined,
             start_date: startDate || undefined,
             end_date: endDate || undefined,
             page,

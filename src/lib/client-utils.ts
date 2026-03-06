@@ -51,7 +51,27 @@ export function formatDate(dateStr: string | null | undefined): string {
 
 export function formatDateTime(dateStr: string | null | undefined): string {
     if (!dateStr) return '--';
-    return new Date(dateStr).toLocaleDateString('pt-BR', {
+
+    // A API pode enviar sufixo `Z`, mas o horario ja vem no relogio de Brasilia.
+    // Nesse caso, removemos a interpretacao de UTC para preservar a hora original.
+    const apiUtcLikeMatch = dateStr.match(
+        /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2})(?:\.\d+)?)?Z$/
+    );
+
+    const date = apiUtcLikeMatch
+        ? new Date(
+            Number(apiUtcLikeMatch[1]),
+            Number(apiUtcLikeMatch[2]) - 1,
+            Number(apiUtcLikeMatch[3]),
+            Number(apiUtcLikeMatch[4]),
+            Number(apiUtcLikeMatch[5]),
+            Number(apiUtcLikeMatch[6] ?? '0')
+        )
+        : new Date(dateStr);
+
+    if (isNaN(date.getTime())) return '--';
+
+    return date.toLocaleString('pt-BR', {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',

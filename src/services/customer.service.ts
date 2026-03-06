@@ -263,7 +263,8 @@ export const customerService = {
         page?: number;
         start_date?: string;
         end_date?: string;
-        search?: string;
+        login?: string;
+        order_id?: number;
         status?: number;
     } = {}) => {
         const response = await api.get<PersonalReengagementResponse>('/api/reengagements/personal', {
@@ -271,7 +272,8 @@ export const customerService = {
                 page: params.page ?? 1,
                 ...(params.start_date && { start_date: params.start_date }),
                 ...(params.end_date && { end_date: params.end_date }),
-                ...(params.search && { search: params.search }),
+                ...(params.login && { login: params.login }),
+                ...(params.order_id && { order_id: params.order_id }),
                 ...(params.status !== undefined && { status: params.status }),
             },
         });

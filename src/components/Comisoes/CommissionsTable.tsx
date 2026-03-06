@@ -7,7 +7,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { formatCurrency, formatDate } from '@/lib/client-utils';
+import { formatCurrency, formatDateTime } from '@/lib/client-utils';
 import { cn } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
 import { Pagination } from '@/components/ui/pagination';
@@ -24,6 +24,7 @@ interface CommissionItem {
     created_at?: string;
     personal_order: {
         user: {
+            login: string;
             name: string;
         };
         value: number | string;
@@ -166,7 +167,10 @@ export function CommissionsTable({
                                             {item.attendant_name ?? 'NA'}
                                         </TableCell>
                                         <TableCell className="text-xs sm:text-sm">
-                                            {item.personal_order?.user?.name ?? 'NA'}
+                                            <p>{item.personal_order?.user?.name ?? 'NA'}</p>
+                                            <p className="text-muted-foreground">
+                                                 ({item.personal_order?.user?.login ?? 'NA'})
+                                            </p>
                                         </TableCell>
                                         <TableCell className="text-xs sm:text-sm">
                                             {item.order_id ?? 'NA'}
@@ -181,7 +185,7 @@ export function CommissionsTable({
                                             {item.status ?? 'NA'}
                                         </TableCell>
                                         <TableCell className="text-xs sm:text-sm">
-                                            {item.created_at ? formatDate(item.created_at) : 'NA'}
+                                            {item.created_at ? formatDateTime(item.created_at) : 'NA'}
                                         </TableCell>
                                     </TableRow>
                                 ))

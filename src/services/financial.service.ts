@@ -1,7 +1,7 @@
 import api from './api';
 
 export interface CommissionFilters {
-    search?: string;
+    login?: string;
     start_date?: string;
     end_date?: string;
     page?: number;
@@ -11,7 +11,7 @@ export const financialService = {
     getCommissions: async (params: CommissionFilters = {}) => {
         const response = await api.get('/api/commissions', {
             params: {
-                ...(params.search && { search: params.search }),
+                ...(params.login && { login: params.login }),
                 ...(params.start_date && { start_date: params.start_date }),
                 ...(params.end_date && { end_date: params.end_date }),
                 ...(params.page && { page: params.page }),
