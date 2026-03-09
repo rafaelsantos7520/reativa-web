@@ -11,6 +11,8 @@ interface SidebarNavProps {
 
 export default function SidebarNav({ onNav }: SidebarNavProps) {
     const { userType } = useAuth();
+
+ 
     const visibleItems = filterNavItems(navItems, userType);
 
     return (

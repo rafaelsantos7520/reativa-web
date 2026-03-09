@@ -11,6 +11,13 @@ export interface Attendant {
     type: number;
     type_label: string;
     graduation_label: string | null;
+    parent_id: number;
+    parent?: {
+        id: number;
+        user_id: number;
+        type: number;
+        type_label: string;
+    } | null;
 }
 
 export interface UserData {
@@ -18,7 +25,7 @@ export interface UserData {
     uuid: string;
     name: string;
     email: string;
-    attendants: Attendant;
+    attendant: Attendant;
 }
 
 export interface User extends UserData {

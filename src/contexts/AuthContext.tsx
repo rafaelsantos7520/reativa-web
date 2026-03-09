@@ -17,7 +17,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const isAuthenticated = !!token && !!user;
 
     // Dados do attendant derivados do user
-    const attendant = useMemo(() => user?.attendants ?? null, [user]);
+    const attendant = useMemo(() => user?.attendant ?? null, [user]);
     const userType = useMemo(() => attendant?.type, [attendant]);
 
     useEffect(() => {

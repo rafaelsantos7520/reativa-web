@@ -1,4 +1,4 @@
-import { LayoutDashboard, Trophy, Users, UsersRound, Headphones, Bell, type LucideIcon, DollarSign } from 'lucide-react';
+import { LayoutDashboard, Trophy, UsersRound, Headphones, Bell,  type LucideIcon, HandCoins, Handshake} from 'lucide-react';
 import { saleNotifications } from '@/data/mock';
 
 export interface NavItem {
@@ -14,8 +14,8 @@ export const navItems: NavItem[] = [
     { to: '/ranking', label: 'Ranking', icon: Trophy },
     { to: '/clientes', label: 'Clientes', icon: UsersRound },
     { to: '/meus-atendimentos', label: 'Meus Atendimentos', icon: Headphones },
-    { to: '/equipe', label: 'Equipe', icon: Users },
-    { to: '/comissoes', label: 'Comissões', icon: DollarSign },
+    { to: '/supervisor/performance', label: 'Minha Equipe', icon: Handshake },
+    { to: '/comissoes', label: 'Comissões', icon: HandCoins },
     {
         to: '/notificacoes',
         label: 'Notificações',

@@ -9,10 +9,10 @@ import Ranking from '@/pages/Ranking/Ranking';
 import Clientes from '@/pages/Clientes/Clientes';
 import ClienteDetalhes from '@/pages/Clientes/ClienteDetalhes';
 import MeusAtendimentos from '@/pages/Clientes/MeusAtendimentos';
-import Equipe from '@/pages/Equipe/Equipe';
 import Notificacoes from '@/pages/Notificacoes/Notificacoes';
 import { Loader2 } from 'lucide-react';
 import Comissoes from './pages/Comisoes/Comissoes';
+import SupervisorPerformance from './pages/Supervisor/SupervisorPerformance';
 
 function ProtectedApp() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -74,10 +74,10 @@ export default function App() {
             <Route path="/meus-atendimentos" element={<MeusAtendimentos />} />
             <Route path="/comissoes" element={<Comissoes />} />
             <Route
-              path="/equipe"
+              path="/supervisor/performance"
               element={
-                <RoleGuard route="/equipe">
-                  <Equipe />
+                <RoleGuard route="/supervisor/performance">
+                  <SupervisorPerformance />
                 </RoleGuard>
               }
             />
