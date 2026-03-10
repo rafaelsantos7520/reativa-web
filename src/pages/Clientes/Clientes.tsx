@@ -210,17 +210,10 @@ export default function Clientes() {
                     <div className="flex items-center gap-2">
                         <Users className="w-4 h-4 text-muted-foreground" />
                         <h2 className="text-sm font-semibold">Clientes</h2>
-                        <Badge variant="outline" className="text-[10px] bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-500/20">
-                            {loading ? '...' : (totalItems > 0 ? `${totalItems} total` : clients.length)}
-                        </Badge>
+          
                     </div>
                     <div className="flex items-center gap-3">
-                        {isFetching && !isLoading && (
-                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                                Buscando...
-                            </div>
-                        )}
+                       
                         {showingFrom > 0 && !loading && (
                             <span className="text-xs text-muted-foreground">
                                 Exibindo {showingFrom}–{showingTo}

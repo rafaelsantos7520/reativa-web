@@ -1,5 +1,4 @@
-import { formatCurrency, formatDate } from '@/lib/client-utils';
-import { Badge } from '@/components/ui/badge';
+import { formatCurrency, formatDateTime } from '@/lib/client-utils';
 
 interface CommissionItem {
     id?: number;
@@ -12,6 +11,7 @@ interface CommissionItem {
     created_at?: string;
     personal_order: {
         user: {
+            login: string;
             name: string;
         };
         value: number | string;
@@ -29,15 +29,12 @@ export function CommissionCard({ item }: CommissionCardProps) {
             <div className="flex items-start justify-between gap-2">
                 <div className="flex-1 min-w-0">
                     <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-                        Atendente
+                        #ID
                     </p>
-                    <p className="text-sm font-medium truncate">
-                        {item.attendant_name ?? 'NA'}
+                    <p className="text-sm font-medium truncate text-muted-foreground">
+                        {item.id ?? 'NA'}
                     </p>
                 </div>
-                <Badge variant="outline" className="text-[10px] flex-shrink-0">
-                    {item.status ?? 'NA'}
-                </Badge>
             </div>
 
             {/* Cliente */}
@@ -47,6 +44,7 @@ export function CommissionCard({ item }: CommissionCardProps) {
                 </p>
                 <p className="text-sm truncate">
                     {item.personal_order?.user?.name ?? 'NA'}
+                    <small className="text-muted-foreground"> ({item.personal_order?.user?.login ?? 'NA'})</small>
                 </p>
             </div>
 
@@ -65,7 +63,7 @@ export function CommissionCard({ item }: CommissionCardProps) {
                         Data
                     </p>
                     <p className="text-sm">
-                        {item.created_at ? formatDate(item.created_at) : 'NA'}
+                        {item.created_at ? formatDateTime(item.created_at) : 'NA'}
                     </p>
                 </div>
             </div>

@@ -41,7 +41,7 @@ export function CommissionsFilters({
                 <div className="relative w-full md:flex-1 md:min-w-[220px] md:max-w-sm">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input
-                        placeholder="Buscar por atendente, cliente..."
+                        placeholder="digite o login do cliente"
                         value={search}
                         onChange={e => onSearchChange(e.target.value)}
                         className="pl-9 h-9 text-sm w-full"

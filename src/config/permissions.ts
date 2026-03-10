@@ -33,6 +33,7 @@ const restrictedRoutes: Record<string, number[]> = {
     '/equipe': [UserRole.GERENTE, UserRole.SUPERVISOR],
     '/supervisor/performance': [UserRole.SUPERVISOR],
     '/manager/performance': [UserRole.GERENTE],
+    '/atendentes': [UserRole.GERENTE, UserRole.SUPERVISOR],
 };
 
 /**
@@ -64,6 +65,7 @@ const hiddenNavItems: Record<string, number[]> = {
     '/equipe': [UserRole.GERENTE, UserRole.SUPERVISOR],
     '/supervisor/performance': [UserRole.SUPERVISOR],
     '/manager/performance': [UserRole.GERENTE],
+    '/atendentes': [UserRole.GERENTE, UserRole.SUPERVISOR],
 };
 
 /**

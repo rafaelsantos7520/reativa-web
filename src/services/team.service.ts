@@ -45,7 +45,13 @@ export interface ManagerAttendant {
         id: number;
         name: string;
         login: string;
+        personal_data: {
+            avatar: string;
+            id: string;
+            user_id: string;
+        };
     };
+  
 }
 
 export interface ManagerSupervisor {
@@ -83,6 +89,37 @@ export interface ManagerPerformanceResponse {
     supervisors: ManagerSupervisor[];
 }
 
+export interface AttendantsFilters {
+    search?: string;
+    type?: number;
+    country_code?: string;
+    page?: number;
+}
+
+export interface AttendantsPaginationLinks {
+    first: string | null;
+    last: string | null;
+    prev: string | null;
+    next: string | null;
+}
+
+export interface AttendantsResponse {
+    attendants: {
+        data: ManagerAttendant[];
+        links: AttendantsPaginationLinks;
+        meta?: {
+            current_page: number;
+            last_page: number;
+            per_page: number;
+            total: number;
+        };
+    };
+    types: Record<string, string>;
+    administrators: ManagerAttendant[];
+    graduates: Record<string, string>;
+    countries: { code: string; name: string }[];
+}
+
 export const teamService = {
     /** Desempenho da equipe do supervisor logado */
     getSupervisorPerformance: async (): Promise<TeamMemberPerformance[]> => {
@@ -96,4 +133,20 @@ export const teamService = {
         const response = await api.get<ManagerPerformanceResponse>('/api/manager/performance');
         return response.data;
     },
+
+    /** Cria um novo atendente */
+
+    /** Lista atendentes com filtros e paginação */
+    getAttendants: async (filters?: AttendantsFilters): Promise<AttendantsResponse> => {
+        const response = await api.get<{ success: boolean; data: AttendantsResponse }>('/api/attendants', {
+            params: filters,
+        });
+        return response.data.data;
+    },
+
+    /** Cria um novo atendente */
+    createAttendant: async (data: { name: string; login: string; password: string }) => {
+        const response = await api.post('/api/attendants/create', data);
+        return response.data;
+    }
 };

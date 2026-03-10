@@ -1,4 +1,3 @@
-import { Badge } from '@/components/ui/badge';
 import {
     Table,
     TableBody,
@@ -9,7 +8,6 @@ import {
 } from '@/components/ui/table';
 import { formatCurrency, formatDateTime } from '@/lib/client-utils';
 import { cn } from '@/lib/utils';
-import { Loader2 } from 'lucide-react';
 import { Pagination } from '@/components/ui/pagination';
 import { CommissionCard } from './CommissionCard';
 
@@ -64,18 +62,11 @@ export function CommissionsTable({
             <div className="px-3 py-3 sm:px-5 sm:py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
                 <div className="flex items-center gap-2">
                     <h2 className="text-sm font-semibold">Detalhes das Comissões</h2>
-                    <Badge variant="outline" className="text-[10px] bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-500/20">
-                        {isLoading ? '...' : `${items.length}`}
-                    </Badge>
+                   
                 </div>
 
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 text-xs">
-                    {isFetching && !isLoading && (
-                        <div className="flex items-center gap-1.5 text-muted-foreground">
-                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                            <span>Buscando...</span>
-                        </div>
-                    )}
+                    
                     {showingFrom > 0 && !isLoading && (
                         <span className="text-muted-foreground">
                             Exibindo {showingFrom}-{showingTo}
@@ -116,22 +107,19 @@ export function CommissionsTable({
                         <TableHeader>
                             <TableRow className="border-border hover:bg-transparent bg-secondary/80 dark:bg-secondary/90 backdrop-blur-sm">
                                 <TableHead className="text-[10px] sm:text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">
-                                    Atendente
+                                    #ID
                                 </TableHead>
                                 <TableHead className="text-[10px] sm:text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">
                                     Cliente
                                 </TableHead>
                                 <TableHead className="text-[10px] sm:text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">
-                                    Pedido
+                                   Número do Pedido
                                 </TableHead>
                                 <TableHead className="text-[10px] sm:text-[11px] uppercase tracking-wider font-semibold text-muted-foreground text-right">
-                                    Valor
+                                    Valor do Pedido
                                 </TableHead>
                                 <TableHead className="text-[10px] sm:text-[11px] uppercase tracking-wider font-semibold text-muted-foreground text-right">
                                     Comissão
-                                </TableHead>
-                                <TableHead className="text-[10px] sm:text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">
-                                    Status
                                 </TableHead>
                                 <TableHead className="text-[10px] sm:text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">
                                     Data
@@ -164,7 +152,7 @@ export function CommissionsTable({
                                 items.map((item: CommissionItem, index: number) => (
                                     <TableRow key={item.id ?? item.order_id ?? index}>
                                         <TableCell className="font-medium text-xs sm:text-sm">
-                                            {item.attendant_name ?? 'NA'}
+                                            {item.id ?? 'NA'}
                                         </TableCell>
                                         <TableCell className="text-xs sm:text-sm">
                                             <p>{item.personal_order?.user?.name ?? 'NA'}</p>
@@ -181,9 +169,7 @@ export function CommissionsTable({
                                         <TableCell className="text-right tabular-nums font-semibold text-emerald-600 dark:text-emerald-400 text-xs sm:text-sm">
                                             {formatCurrency(item.value ?? 0)}
                                         </TableCell>
-                                        <TableCell className="text-xs sm:text-sm">
-                                            {item.status ?? 'NA'}
-                                        </TableCell>
+                                       
                                         <TableCell className="text-xs sm:text-sm">
                                             {item.created_at ? formatDateTime(item.created_at) : 'NA'}
                                         </TableCell>

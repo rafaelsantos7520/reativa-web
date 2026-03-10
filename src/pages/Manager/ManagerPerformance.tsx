@@ -11,8 +11,9 @@ export default function ManagerPerformance() {
         refetchInterval: 5 * 60 * 1000,
     });
 
-    const supervisors = data?.supervisors ?? [];
     const summary = data?.summary;
+    const supervisors = data?.supervisors ?? [];
+
 
     return (
         <div className="p-4 py-8 sm:p-6 space-y-5 max-w-7xl mx-auto">
