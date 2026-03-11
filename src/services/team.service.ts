@@ -24,6 +24,15 @@ export interface TeamMemberPerformance {
     };
 }
 
+export interface Administrator {
+    id: number;
+    created_at: string;
+    updated_at: string;
+    deleted_at: string | null;
+    login: string;
+    name: string;
+}
+
 export interface ManagerAttendant {
     id: number;
     user_id: number;
@@ -51,8 +60,10 @@ export interface ManagerAttendant {
             user_id: string;
         };
     };
-  
+
 }
+
+
 
 export interface ManagerSupervisor {
     id: number;
@@ -115,9 +126,11 @@ export interface AttendantsResponse {
         };
     };
     types: Record<string, string>;
-    administrators: ManagerAttendant[];
+    administrators: Administrator[];
     graduates: Record<string, string>;
-    countries: { code: string; name: string }[];
+    countries: {
+        acronym: string; code: string; name: string 
+}[];
 }
 
 export const teamService = {
@@ -145,7 +158,8 @@ export const teamService = {
     },
 
     /** Cria um novo atendente */
-    createAttendant: async (data: { name: string; login: string; password: string }) => {
+    createAttendant: async (data: { user_id: number; type: number; graduation: number }) => {
+
         const response = await api.post('/api/attendants/create', data);
         return response.data;
     }

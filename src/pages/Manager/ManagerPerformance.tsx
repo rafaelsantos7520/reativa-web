@@ -16,7 +16,7 @@ export default function ManagerPerformance() {
 
 
     return (
-        <div className="p-4 py-8 sm:p-6 space-y-5 max-w-7xl mx-auto">
+        <div className="p-4 py-8 sm:p-6 space-y-5 max-w-screen-2xl mx-auto">
             <ManagerHeader isFetching={isFetching} onRefresh={refetch} />
 
             <ManagerStats

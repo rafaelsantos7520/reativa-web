@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
-import { Menu, X, Zap } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/useAuth';
 import AuroraBackground from '@/components/AuroraBackground';
@@ -79,8 +79,8 @@ export default function AppLayout() {
                         <Menu className="w-5 h-5" />
                     </Button>
                     <div className="flex items-center gap-2.5 flex-1">
-                        <div className="w-7 h-7 shrink-0 rounded-lg bg-blue-600 flex items-center justify-center">
-                            <Zap className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
+                        <div className="flex items-center justify-center w-10 h-10 rounded-xl b">
+                            <img src="/images/logos/logo-v2.jpeg" alt="Reativa Logo" className="object-cover rounded-lg" />
                         </div>
                         <span className="font-black text-sm gradient-text-blue">Reativa</span>
                     </div>

@@ -1,27 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Trophy, Star } from 'lucide-react';
-import { motion, type Variants } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ChampionParticle } from './ChampionParticle';
 import { AnimatedNumber } from './AnimatedNumber';
 import type { LeaderboardEntry } from './types';
-
-const scaleIn: Variants = {
-    hidden: { opacity: 0, scale: 0.72 },
-    show: (delay: number = 0) => ({
-        opacity: 1, scale: 1,
-        transition: { type: 'spring' as const, damping: 18, stiffness: 320, delay },
-    }),
-};
-
-const fadeUp: Variants = {
-    hidden: { opacity: 0, y: 28 },
-    show: (delay: number = 0) => ({
-        opacity: 1, y: 0,
-        transition: { type: 'spring' as const, damping: 22, stiffness: 260, delay },
-    }),
-};
 
 const PODIUM_ORDER = [1, 0, 2];
 const PODIUM_CFG = [
@@ -50,13 +34,12 @@ export function PodiumSection({ sellers }: PodiumSectionProps) {
     return (
         <motion.div
             className="glass-card rounded-2xl p-4 sm:p-6 relative overflow-hidden"
-            variants={fadeUp} initial="hidden" animate="show" custom={0.08}
         >
             <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-500/60 to-transparent" />
             <motion.div
                 className="absolute inset-0 bg-gradient-to-b from-amber-500/[0.04] via-transparent to-transparent pointer-events-none"
-                animate={{ opacity: [0.6, 1, 0.6] }}
-                transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
+                animate={{ opacity: [0.4, 0.6, 0.4] }}
+                transition={{ repeat: Infinity, duration: 5, ease: 'easeInOut' }}
             />
 
             <h2 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest text-center mb-6 sm:mb-8 flex items-center justify-center gap-2">
@@ -65,8 +48,8 @@ export function PodiumSection({ sellers }: PodiumSectionProps) {
                 <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-orange-500/10 border border-orange-500/15">
                     <motion.div
                         className="w-1.5 h-1.5 rounded-full bg-orange-400"
-                        animate={{ opacity: livePulse ? 1 : 0.2, scale: livePulse ? 1.1 : 0.9 }}
-                        transition={{ duration: 0.3 }}
+                        animate={{ opacity: livePulse ? 1 : 0.5, scale: livePulse ? 1.05 : 0.95 }}
+                        transition={{ duration: 0.4 }}
                     />
                     <span className="text-[9px] text-orange-400 font-bold">AO VIVO</span>
                 </span>
@@ -86,16 +69,12 @@ export function PodiumSection({ sellers }: PodiumSectionProps) {
                         <motion.div
                             key={seller.id}
                             className="flex flex-col items-center gap-2 sm:gap-3"
-                            variants={scaleIn}
-                            initial="hidden"
-                            animate="show"
-                            custom={cfg.delay}
                         >
                             {isFirst && (
                                 <motion.div
                                     className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1 rounded-full bg-amber-500/15 border border-amber-500/25 mb-1"
-                                    animate={{ y: [0, -3, 0] }}
-                                    transition={{ repeat: Infinity, duration: 2.4, ease: 'easeInOut' }}
+                                    animate={{ y: [0, -1.5, 0] }}
+                                    transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
                                 >
                                     <Star className="w-3 h-3 text-amber-400" />
                                     <span className="text-[8px] sm:text-[9px] text-amber-400 font-bold uppercase tracking-wider">MVP do Mês</span>
@@ -115,8 +94,8 @@ export function PodiumSection({ sellers }: PodiumSectionProps) {
                                     <motion.div
                                         className="absolute -inset-4 rounded-full bg-amber-400/15"
                                         style={{ filter: 'blur(16px)' }}
-                                        animate={{ scale: [1, 1.12, 1], opacity: [0.5, 0.9, 0.5] }}
-                                        transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+                                        animate={{ scale: [1, 1.06, 1], opacity: [0.3, 0.5, 0.3] }}
+                                        transition={{ repeat: Infinity, duration: 3.5, ease: 'easeInOut' }}
                                     />
                                 )}
 
@@ -125,8 +104,8 @@ export function PodiumSection({ sellers }: PodiumSectionProps) {
                                         'rounded-full bg-gradient-to-br flex items-center justify-center font-black text-white shadow-xl relative z-10',
                                         cfg.avatarSize, cfg.avatarGrad
                                     )}
-                                    whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }}
-                                    transition={{ type: 'spring', stiffness: 300 }}
+                                    whileHover={{ scale: 1.05 }}
+                                    transition={{ type: 'spring', stiffness: 400, damping: 25 }}
                                 >
                                     <Avatar className="h-full w-full">
                                         <AvatarImage src={avatarUrl} alt={seller.user.name} className="object-cover" />

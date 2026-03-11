@@ -57,7 +57,7 @@ export default function Comissoes() {
     };
 
     return (
-        <div className="p-3 py-6 sm:p-6 sm:py-8 space-y-4 sm:space-y-5 max-w-7xl mx-auto">
+        <div className="p-3 py-6 sm:p-6 sm:py-8 space-y-4 sm:space-y-5 max-w-screen-2xl mx-auto">
             {/* Header */}
             <div className="animate-fade-in">
                 <div className="flex items-center gap-2 mb-1">

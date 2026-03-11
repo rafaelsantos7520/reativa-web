@@ -31,14 +31,14 @@ export default function Dashboard() {
     const recentSales = data?.recent_sales ?? [];
 
     return (
-        <div className="p-6 space-y-6 max-w-7xl mx-auto">
+        <div className="p-6 space-y-6 max-w-screen-2xl mx-auto">
 
             {/* Header */}
             <div className="animate-fade-in" style={{ animationDelay: '0ms', opacity: 0 }}>
                 <div className="flex items-center justify-between gap-3 mb-1">
                     <div className="flex items-center gap-2">
                         <div className="w-1 h-6 rounded-full bg-gradient-to-b from-violet-500 to-blue-500" />
-                        <h1 className="text-2xl font-extrabold tracking-tight flex items-center gap-2">
+                        <h1 className="md:text-2xl  font-extrabold tracking-tight flex items-center gap-2">
                             {getGreeting()},{' '}
                             <span className="gradient-text-blue">{name.split(' ')[0]}</span>
                             <Award className="w-5 h-5 text-violet-500" />

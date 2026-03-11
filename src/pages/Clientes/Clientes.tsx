@@ -8,7 +8,6 @@ import {
     Headphones,
     RefreshCcw,
     Users,
-    Loader2,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -62,12 +61,13 @@ export default function Clientes() {
     });
 
     const clients = data?.data ?? [];
-    const totalItems = data?.total ?? data?.to ?? 0;
     const currentPage = data?.current_page ?? page;
     const nextPageUrl = data?.next_page_url ?? null;
     const prevPageUrl = data?.prev_page_url ?? null;
     const showingFrom = data?.from ?? 0;
     const showingTo = data?.to ?? 0;
+
+    
 
     const loading = isLoading;
     const hasActiveFilters = search !== '' || filterStatus !== 'todos';
@@ -104,7 +104,7 @@ export default function Clientes() {
     ];
 
     return (
-        <div className="p-4 py-8 sm:p-6 space-y-5 max-w-7xl mx-auto">
+        <div className="p-4 py-8 sm:p-6 space-y-5 max-w-screen-2xl mx-auto">
             {/* Header */}
             <div className="flex items-center justify-between animate-fade-in  flex-col sm:flex-row gap-4">
                 <div>

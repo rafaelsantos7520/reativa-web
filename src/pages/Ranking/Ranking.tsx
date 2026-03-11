@@ -52,7 +52,7 @@ export default function Ranking() {
 
     if (isLoading) {
         return (
-            <div className="p-6 space-y-5 max-w-7xl mx-auto">
+            <div className="p-6 space-y-5 max-w-screen-2xl mx-auto">
                 <RankingSkeleton />
             </div>
         );
@@ -60,7 +60,7 @@ export default function Ranking() {
 
     if (isError) {
         return (
-            <div className="p-6 max-w-7xl mx-auto">
+            <div className="p-6 max-w-screen-2xl mx-auto">
                 <div className="glass-card rounded-2xl p-6 border border-rose-500/20 bg-rose-500/5">
                     <div className="flex items-start gap-3">
                         <AlertCircle className="w-5 h-5 text-rose-400 mt-0.5" />
@@ -80,7 +80,7 @@ export default function Ranking() {
     }
 
     return (
-        <div className="p-6 space-y-5 max-w-7xl mx-auto">
+        <div className="p-6 space-y-5 max-w-screen-2xl mx-auto">
             <RankingHeader
                 participants={sellers.length}
                 totalRevenue={totalRevenue}

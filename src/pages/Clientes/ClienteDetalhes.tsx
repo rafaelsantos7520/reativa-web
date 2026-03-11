@@ -118,7 +118,7 @@ export default function ClienteDetalhes() {
                 statusOptions={statusMap}
                 onUpdated={() => refetch()}
             />
-            <div className="p-4 sm:p-6 space-y-5 max-w-5xl mx-auto">
+            <div className="p-4 sm:p-6 space-y-5 max-w-screen-2xl mx-auto">
                 {/* Header */}
                 <div className="animate-fade-in space-y-3">
                     <div className="flex items-start gap-3">

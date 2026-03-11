@@ -3,8 +3,10 @@ import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Users, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { formatCurrency } from '@/lib/client-utils';
+import { formatCurrency, getInitials } from '@/lib/client-utils';
 import { type ManagerSupervisor, type ManagerAttendant } from '@/services/team.service';
+import { Avatar, AvatarFallback } from '../ui/avatar';
+import { AvatarImage } from '@radix-ui/react-avatar';
 
 // ─── Skeleton ────────────────────────────────────────────────────────────────
 
@@ -54,13 +56,7 @@ export function SupervisorTeamCardSkeleton() {
 // ─── Attendant mini card ──────────────────────────────────────────────────────
 
 function AttendantMiniCard({ attendant }: { attendant: ManagerAttendant }) {
-    const initials = attendant.user.name
-        .split(' ')
-        .map(p => p[0])
-        .filter(Boolean)
-        .slice(0, 2)
-        .join('')
-        .toUpperCase();
+
 
     const revenue = typeof attendant.revenue === 'string'
         ? parseFloat(attendant.revenue)
@@ -71,7 +67,7 @@ function AttendantMiniCard({ attendant }: { attendant: ManagerAttendant }) {
             {/* Nome */}
             <div className="flex items-center gap-3 mb-3">
                 <div className="w-11 h-11 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-sm shrink-0">
-                    {initials}
+                    {getInitials(attendant.user.name)}
                 </div>
                 <div className="flex-1 min-w-0">
                     <p className="font-semibold text-sm truncate">{attendant.user.name}</p>
@@ -89,11 +85,11 @@ function AttendantMiniCard({ attendant }: { attendant: ManagerAttendant }) {
             <div className="grid grid-cols-4 gap-2 text-center pt-3 border-t border-border/40">
                 <div>
                     <p className="text-base font-bold tabular-nums">{attendant.sales}</p>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">Vendas</p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">Reat.</p>
                 </div>
                 <div>
                     <p className="text-base font-bold tabular-nums">{attendant.total_reengagements}</p>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">Reat.</p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">Atend.</p>
                 </div>
                 <div>
                     <p className="text-base font-bold tabular-nums">{attendant.conversion}%</p>
@@ -113,23 +109,21 @@ function AttendantMiniCard({ attendant }: { attendant: ManagerAttendant }) {
 // ─── Supervisor team card ─────────────────────────────────────────────────────
 
 export function SupervisorTeamCard({ supervisor }: { supervisor: ManagerSupervisor }) {
-    const initials = supervisor.user.name
-        .split(' ')
-        .map(p => p[0])
-        .filter(Boolean)
-        .slice(0, 2)
-        .join('')
-        .toUpperCase();
+
 
     const conversionPct = Math.min(supervisor.conversion, 100);
+    
 
     return (
         <div className="solid-card overflow-hidden hover:scale-[1.005] transition-transform">
             {/* Cabeçalho do supervisor */}
             <div className="px-5 py-4 bg-indigo-50/50 dark:bg-indigo-500/5 border-b border-border flex items-center gap-4">
-                <div className="w-14 h-14 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-base shrink-0">
-                    {initials}
-                </div>
+                <Avatar>
+                    <AvatarImage src={'/images/logos/logo-white.webp'} alt={supervisor.user.name} />
+                    <AvatarFallback>
+                        {getInitials(supervisor.user.name)}
+                    </AvatarFallback>
+                </Avatar>
                 <div className="flex-1 min-w-0">
                     <p className="font-bold text-base truncate">{supervisor.user.name}</p>
                     <p className="text-sm text-muted-foreground truncate">@{supervisor.user.login || '—'}</p>
@@ -149,27 +143,22 @@ export function SupervisorTeamCard({ supervisor }: { supervisor: ManagerSupervis
             <div className="grid grid-cols-5 gap-3 px-5 py-4 border-b border-border/50">
                 <div className="text-center">
                     <p className="text-xl font-bold tabular-nums">{supervisor.sales}</p>
-                    <p className="text-[11px] text-muted-foreground uppercase tracking-wide mt-0.5">Vendas</p>
+                    <p className="text-sm text-muted-foreground uppercase tracking-wide mt-0.5">Reativaçôes</p>
                 </div>
                 <div className="text-center">
                     <p className="text-xl font-bold tabular-nums">{supervisor.total_reengagements}</p>
-                    <p className="text-[11px] text-muted-foreground uppercase tracking-wide mt-0.5">Reat.</p>
+                    <p className="text-sm text-muted-foreground uppercase tracking-wide mt-0.5">Atendimentos</p>
                 </div>
                 <div className="text-center">
                     <p className="text-xl font-bold tabular-nums">{supervisor.conversion}%</p>
-                    <p className="text-[11px] text-muted-foreground uppercase tracking-wide mt-0.5">Conv.</p>
+                    <p className="text-sm text-muted-foreground uppercase tracking-wide mt-0.5">Conv.</p>
                 </div>
+              
                 <div className="text-center">
-                    <p className="text-xl font-bold tabular-nums text-amber-500 dark:text-amber-400">
-                        {supervisor.xp.toFixed(2)}
-                    </p>
-                    <p className="text-[11px] text-muted-foreground uppercase tracking-wide mt-0.5">XP</p>
-                </div>
-                <div className="text-center">
-                    <p className="text-base font-bold tabular-nums text-emerald-600 dark:text-emerald-400">
+                    <p className="text-xl font-bold  text-emerald-600 dark:text-emerald-400">
                         {formatCurrency(supervisor.revenue)}
                     </p>
-                    <p className="text-[11px] text-muted-foreground uppercase tracking-wide mt-0.5">Receita</p>
+                    <p className="text-sm text-muted-foreground uppercase tracking-wide mt-0.5">Receita</p>
                 </div>
             </div>
 
@@ -220,7 +209,7 @@ interface SupervisorTeamListProps {
 
 export function SupervisorTeamList({ supervisors, isLoading, isFetching }: SupervisorTeamListProps) {
     return (
-        <div className="solid-card overflow-hidden animate-fade-in">
+        <div className="solid-card">
             <div className="px-5 py-4 border-b border-border flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <Users className="w-4 h-4 text-muted-foreground" />

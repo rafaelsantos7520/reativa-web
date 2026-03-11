@@ -19,15 +19,15 @@ export default function SidebarShell({ name, email, initials, onLogout, onNav }:
             {/* ── Brand ── */}
             <div className="px-5 py-5 border-b border-border">
                 <div className="flex items-center gap-3">
-                    <div className="relative w-9 h-9 shrink-0">
+                    <div className="relative">
                         <div
-                            className="relative w-10 h-10 rounded-xl bg-cyan-600 flex items-center justify-center"
+                            className="relative  rounded-xl bg-cyan-600 flex items-center justify-center"
                         >
-                            <img src="/images/logos/logo-white.webp" alt="Reativa Ozonteck Logo" className="w-6 h-6" />
+                            <img src="/images/logos/logo-v2.jpeg" alt="Reativa Logo" className="w-10 h-10 object-cover rounded-xl" />
                         </div>
                     </div>
                     <div>
-                        <p className="font-black text-sm gradient-text-blue tracking-wide">Reativa Ozonteck</p>
+                        <p className="font-black">Reativa</p>
                     </div>
                 </div>
             </div>

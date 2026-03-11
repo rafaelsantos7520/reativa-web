@@ -1,15 +1,17 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { UserCog, RefreshCcw } from 'lucide-react';
+import { UserCog, RefreshCcw, Plus } from 'lucide-react';
 import { teamService, type AttendantsFilters } from '@/services/team.service';
 import { AttendantsList } from '@/components/Atendentes/AttendantsList';
 import { AttendantsFiltersBar } from '@/components/Atendentes/AttendantsFiltersBar';
+import { CreateAttendantModal } from '@/components/Atendentes/CreateAttendantModal';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useDebounce } from '@/hooks/useDebounce';
 
 export default function Atendentes() {
     const [filters, setFilters] = useState<AttendantsFilters>({});
+    const [createModalOpen, setCreateModalOpen] = useState(false);
     const debouncedSearch = useDebounce(filters.search ?? '', 400);
 
     const { data, isLoading, isFetching, refetch } = useQuery({
@@ -27,8 +29,8 @@ export default function Atendentes() {
     const total = data?.attendants?.meta?.total;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 p-4 py-8 sm:p-6">
-            <div className="space-y-5 max-w-7xl mx-auto">
+        <div className="min-h-screen  p-4 py-12 sm:p-12 max-w-screen-2xl mx-auto">
+            <div className="space-y-5">
                 {/* Header */}
                 <div className="animate-fade-in">
                     <div className="flex items-start justify-between gap-6 flex-col sm:flex-row">
@@ -43,15 +45,25 @@ export default function Atendentes() {
                                 Gerencie e visualize todos os atendentes da plataforma
                             </p>
                         </div>
-                        <Button
-                            onClick={() => refetch()}
-                            disabled={isFetching}
-                            size="lg"
-                            className="gap-2 bg-blue-600 hover:bg-blue-700 text-white"
-                        >
-                            <RefreshCcw className={cn('w-4 h-4', isFetching && 'animate-spin')} />
-                            {isFetching ? 'Atualizando...' : 'Atualizar'}
-                        </Button>
+                        <div className="flex items-center gap-2">
+                            <Button
+                                onClick={() => setCreateModalOpen(true)}
+                                size="lg"
+                                className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white"
+                            >
+                                <Plus className="w-4 h-4" />
+                                Novo Atendente
+                            </Button>
+                            <Button
+                                onClick={() => refetch()}
+                                disabled={isFetching}
+                                size="lg"
+                                className="gap-2 bg-blue-600 hover:bg-blue-700 text-white"
+                            >
+                                <RefreshCcw className={cn('w-4 h-4', isFetching && 'animate-spin')} />
+                                {isFetching ? 'Atualizando...' : 'Atualizar'}
+                            </Button>
+                        </div>
                     </div>
                 </div>
 
@@ -68,6 +80,16 @@ export default function Atendentes() {
                     total={total}
                     isLoading={isLoading}
                     isFetching={isFetching}
+                />
+
+                {/* Modal Criar Atendente */}
+                <CreateAttendantModal
+                    open={createModalOpen}
+                    onClose={() => setCreateModalOpen(false)}
+                    administrators={data?.administrators ?? []}
+                    types={data?.types ?? {}}
+                    graduates={data?.graduates ?? {}}
+                    onCreated={() => refetch()}
                 />
             </div>
         </div>
